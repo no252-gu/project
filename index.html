@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>The American Ledger — The Tax That Claims to Punish Vice</title>
+<link href="https://fonts.googleapis.com/css2?family=UnifrakturMaguntia&family=Playfair+Display:ital,wght@0,700;0,900;1,400;1,700&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --ink:      #0A0A0A;
+  --paper:    #F2EBD9;
+  --red:      #8B0000;
+  --gray:     #555;
+  --lt:       #E8DFC8;
+  --navy:     #111111;
+  --navy-lt:  #1a1a1a;
+  --amber:    #B8860B;
+  --amber-lt: #DAA520;
+  --green:    #2D5A27;
+}
+html{scroll-behavior:smooth}
+body{background:var(--paper);color:var(--ink);font-family:'PT Serif',serif;font-size:15px;overflow-x:hidden}
+
+/* ── PROGRESS BAR ── */
+#progress-bar{position:fixed;top:0;left:0;height:3px;z-index:300;background:var(--red);width:0%;transition:width 0.08s linear}
+
+/* ── STICKY NAV ── */
+#snav{
+  position:sticky;top:0;z-index:200;
+  background:var(--ink);
+  height:34px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 2rem;
+  border-bottom:2px solid #222;
+  border-top:1px solid #555;
+}
+.snav-name{font-family:'Playfair Display',serif;font-size:0.85rem;font-weight:900;color:var(--paper);letter-spacing:0.04em;font-style:italic}
+.snav-links{display:flex;gap:1.8rem}
+.snav-links a{font-family:'IBM Plex Mono',monospace;font-size:0.46rem;letter-spacing:0.22em;text-transform:uppercase;color:rgba(255,255,255,0.35);text-decoration:none;transition:color 0.2s}
+.snav-links a:hover{color:rgba(255,255,255,0.8)}
+.snav-tag{font-family:'IBM Plex Mono',monospace;font-size:0.44rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--red)}
+
+/* ════════════════════════════════════
+   MASTHEAD
+════════════════════════════════════ */
+.masthead{
+  background:var(--paper);
+  border-top:5px solid var(--ink);
+  border-bottom:5px solid var(--ink);
+  padding:0.5rem 2.5rem 0;
+}
+.masthead-top{
+  display:flex;justify-content:space-between;align-items:baseline;
+  font-family:'IBM Plex Mono',monospace;font-size:0.46rem;
+  letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);
+  padding-bottom:0.35rem;
+  border-bottom:3px double var(--ink);
+  margin-bottom:0.45rem;
+}
+.masthead-name{
+  text-align:center;
+  font-family:'UnifrakturMaguntia',cursive;
+  font-size:clamp(3rem,10vw,7rem);font-weight:400;
+  line-height:0.9;letter-spacing:0.02em;color:var(--ink);
+  margin:0.3rem 0 0.4rem;
+}
+.masthead-rules{
+  height:9px;margin-bottom:0.38rem;
+  background:linear-gradient(
+    180deg,
+    var(--ink) 0px,var(--ink) 3px,
+    transparent 3px,transparent 4px,
+    var(--ink) 4px,var(--ink) 5px,
+    transparent 5px,transparent 6px,
+    var(--ink) 6px,var(--ink) 9px
+  );
+}
+.masthead-tagline{
+  text-align:center;font-style:italic;font-size:0.7rem;
+  color:var(--gray);letter-spacing:0.12em;font-family:'PT Serif',serif;
+  padding-bottom:0.35rem;border-bottom:1px solid var(--ink);
+}
+.edition-strip{
+  display:flex;justify-content:space-between;align-items:center;
+  border-top:2px solid var(--ink);padding:0.28rem 0;
+  font-family:'IBM Plex Mono',monospace;font-size:0.46rem;
+  letter-spacing:0.15em;text-transform:uppercase;
+}
+.ed-tag{background:var(--ink);color:var(--paper);padding:0.12rem 0.55rem;font-weight:700}
+
+/* ════════════════════════════════════
+   FRONT PAGE — ABOVE THE FOLD
+════════════════════════════════════ */
+.front-page{max-width:1200px;margin:0 auto;padding:1.8rem 2.5rem 0}
+
+.sec-lbl{
+  font-family:'IBM Plex Mono',monospace;font-size:0.5rem;
+  letter-spacing:0.32em;text-transform:uppercase;color:var(--red);
+  display:inline-block;border-bottom:1.5px solid var(--red);
+  padding-bottom:0.1rem;margin-bottom:0.8rem;
+}
+.above-fold{
+  border-bottom:3px double var(--ink);
+  padding-bottom:1.6rem;margin-bottom:0;
+}
+.hed-primary{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(2rem,5.5vw,4rem);font-weight:900;
+  line-height:1.02;letter-spacing:-0.02em;color:var(--ink);
+  max-width:860px;margin-bottom:0.75rem;
+  border-bottom:1px solid var(--ink);padding-bottom:0.5rem;
+}
+.dek{
+  font-family:'PT Serif',serif;font-size:1.04rem;line-height:1.55;
+  color:#333;max-width:700px;
+  border-left:3px solid var(--ink);padding-left:1rem;margin-bottom:0.85rem;
+}
+.byline-row{display:flex;align-items:center;gap:1.5rem;flex-wrap:wrap}
+.byline{font-family:'IBM Plex Mono',monospace;font-size:0.52rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray)}
+.byline strong{color:var(--ink)}
+.byline-rule{flex:1;height:1px;background:#ccc;min-width:30px}
+
+/* ════════════════════════════════════
+   PAGE GRID — THREE COLUMNS
+════════════════════════════════════ */
+.page-grid{
+  display:grid;
+  grid-template-columns:230px 1px 1fr 1px 210px;
+  gap:0 1.8rem;
+  padding:1.8rem 0;
+}
+.col-rule{background:var(--ink)}
+@media(max-width:900px){.page-grid{grid-template-columns:1fr}.col-rule{display:none}}
+
+/* sidebar shared */
+.sidebar{font-size:0.9rem}
+.sbox{border:2px solid var(--ink);padding:0.9rem;margin-bottom:1.2rem}
+.sbox-head{
+  font-family:'Playfair Display',serif;font-size:0.78rem;font-weight:700;
+  text-transform:uppercase;letter-spacing:0.05em;
+  border-bottom:1px solid var(--ink);padding-bottom:0.35rem;margin-bottom:0.75rem;
+}
+.sstat{margin-bottom:0.7rem}
+.sstat-n{font-family:'Playfair Display',serif;font-size:2rem;font-weight:900;line-height:1;color:var(--red)}
+.sstat-l{font-family:'IBM Plex Mono',monospace;font-size:0.44rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);line-height:1.6;margin-top:0.1rem}
+.stoc{font-family:'IBM Plex Mono',monospace;font-size:0.48rem;letter-spacing:0.05em;line-height:2.1;color:#444;border-left:2px solid #ddd;padding-left:0.65rem}
+.stoc strong{color:var(--red);display:block}
+
+/* article body */
+.article-col{font-family:'PT Serif',serif;font-size:0.9rem;line-height:1.74}
+.article-col p+p{text-indent:1.5em}
+.drop-cap::first-letter{float:left;font-family:'Playfair Display',serif;font-size:3.8rem;line-height:0.77;font-weight:900;margin-right:0.06em;margin-top:0.06em}
+.pq{border-top:3px solid var(--ink);border-bottom:3px solid var(--ink);padding:0.85rem 0;margin:1.3rem 0;text-align:center}
+.pq p{font-family:'Playfair Display',serif;font-style:italic;font-size:1.08rem;line-height:1.4;color:var(--ink)}
+.pq cite{font-family:'IBM Plex Mono',monospace;font-size:0.44rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gray);display:block;margin-top:0.4rem}
+.art-note{font-family:'IBM Plex Mono',monospace;font-size:0.52rem;letter-spacing:0.06em;color:#444;border:1px dashed #ccc;padding:0.8rem;margin:1rem 0;line-height:1.8}
+
+/* right column */
+.rcol{font-family:'PT Serif',serif}
+.rcol .sbox{border-color:#ccc}
+.rcol p{font-size:0.82rem;line-height:1.65;color:#444}
+.rcol p+p{margin-top:0.45em}
+.rcol .sbox-head{font-size:0.7rem}
+
+/* ════════════════════════════════════
+   EXHIBIT A — RECEIPT WRAPPER
+════════════════════════════════════ */
+.exhibit-wrap{
+  border:2px solid var(--ink);
+  margin:0 0 3rem;
+}
+.exhibit-header{
+  background:var(--ink);color:var(--paper);
+  padding:0.42rem 1.2rem;
+  display:flex;justify-content:space-between;align-items:center;
+}
+.exhibit-header span{font-family:'IBM Plex Mono',monospace;font-size:0.46rem;letter-spacing:0.28em;text-transform:uppercase}
+.exhibit-header .ex-stamp{
+  background:var(--red);color:#fff;
+  padding:0.1rem 0.45rem;font-weight:700;font-size:0.44rem;letter-spacing:0.2em;
+}
+
+/* Q-toggle */
+.q-strip{
+  display:inline-flex;border:1.5px solid var(--ink);
+}
+.q-btn{
+  font-family:'IBM Plex Mono',monospace;font-size:0.82rem;letter-spacing:0.06em;
+  text-transform:uppercase;padding:0.6rem 1.1rem;
+  border:none;border-right:1px solid var(--ink);
+  background:var(--paper);color:var(--ink);cursor:pointer;
+  transition:background 0.15s,color 0.15s;text-align:center;line-height:1.5;
+  white-space:nowrap;font-weight:700;
+}
+.q-btn:last-child{border-right:none}
+.q-btn.active{background:var(--ink);color:var(--paper)}
+.q-btn small{display:block;font-size:0.65rem;opacity:0.75;font-weight:400}
+.q-btn.active small{opacity:0.9}
+
+/* exhibit body */
+.exhibit-body{
+  padding:1.5rem 2rem;background:var(--lt);
+  display:flex;gap:2rem;flex-wrap:wrap;align-items:flex-start;
+}
+
+/* receipt (keep thermal paper look) */
+.receipt{
+  background:white;width:290px;flex-shrink:0;
+  font-family:'IBM Plex Mono',monospace;color:var(--ink);
+  box-shadow:3px 5px 20px rgba(0,0,0,0.15);
+  background-image:repeating-linear-gradient(0deg,transparent,transparent 22px,rgba(0,0,0,0.025) 22px,rgba(0,0,0,0.025) 23px);
+}
+.tear{height:13px}
+.tear.top{background:var(--paper);clip-path:polygon(0% 100%,3% 0%,6% 100%,9% 0%,12% 100%,15% 0%,18% 100%,21% 0%,24% 100%,27% 0%,30% 100%,33% 0%,36% 100%,39% 0%,42% 100%,45% 0%,48% 100%,51% 0%,54% 100%,57% 0%,60% 100%,63% 0%,66% 100%,69% 0%,72% 100%,75% 0%,78% 100%,81% 0%,84% 100%,87% 0%,90% 100%,93% 0%,96% 100%,99% 0%,100% 100%)}
+.tear.bot{background:var(--paper);margin-top:-1px;clip-path:polygon(0% 0%,3% 100%,6% 0%,9% 100%,12% 0%,15% 100%,18% 0%,21% 100%,24% 0%,27% 100%,30% 0%,33% 100%,36% 0%,39% 100%,42% 0%,45% 100%,48% 0%,51% 100%,54% 0%,57% 100%,60% 0%,63% 100%,66% 0%,69% 100%,72% 0%,75% 100%,78% 0%,81% 100%,84% 0%,87% 100%,90% 0%,93% 100%,96% 0%,99% 100%,100% 0%)}
+.r-body{padding:0.25rem 1.1rem 0.9rem}
+.r-store{text-align:center;padding:0.85rem 0 0.45rem}
+.r-name{font-size:1rem;font-weight:700;letter-spacing:0.12em;text-transform:uppercase}
+.r-sub{font-size:0.54rem;color:#999;margin-top:0.12rem}
+.r-div{border:none;border-top:1px dashed #ccc;margin:0.45rem 0}
+.r-div.thick{border-top:2px solid #333}
+.r-meta{font-size:0.56rem;color:#888;margin-bottom:0.3rem}
+.r-meta span{float:right}
+.r-hh{background:#f4f4f0;padding:0.38rem 0.6rem;margin-bottom:0.38rem;border-left:3px solid var(--amber)}
+.r-hh-lbl{font-size:0.46rem;color:#aaa;text-transform:uppercase;letter-spacing:0.12em}
+.r-hh-val{font-size:0.78rem;font-weight:700;color:var(--ink);margin-top:0.08rem}
+.r-line{display:flex;justify-content:space-between;font-size:0.68rem;padding:0.18rem 0}
+.r-line.hdr{font-size:0.54rem;font-weight:700;color:#888;letter-spacing:0.12em;text-transform:uppercase}
+.r-line.sub{font-size:0.56rem;color:#bbb;padding-left:0.7rem}
+.r-line.sub .rv{color:var(--red)}
+.r-line.tot{font-weight:700;font-size:0.82rem;color:var(--ink)}
+.rv{text-align:right;white-space:nowrap}
+.r-impact{background:var(--navy);color:white;padding:0.85rem 1.1rem;margin:0.45rem 0 0;text-align:center}
+.r-impact-lbl{font-size:0.46rem;letter-spacing:0.22em;color:rgba(255,255,255,0.38);text-transform:uppercase;margin-bottom:0.28rem}
+.r-impact-pct{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;color:var(--amber-lt);line-height:1}
+.r-impact-sub{font-size:0.56rem;color:rgba(255,255,255,0.32);margin-top:0.18rem}
+.r-footer{text-align:center;padding:0.6rem 0 0.2rem;font-size:0.46rem;color:#bbb;letter-spacing:0.1em;line-height:1.8}
+
+/* receipt callouts (newspaper style) */
+.rcpt-side{flex:1;min-width:200px;display:flex;flex-direction:column;gap:1rem;justify-content:flex-start;padding-top:0.6rem}
+.ncallout{border-left:3px solid var(--ink);padding:0.75rem 1rem;background:white}
+.ncallout.red{border-color:var(--red)}
+.ncallout-n{font-family:'Playfair Display',serif;font-size:2.4rem;font-weight:900;line-height:1;color:var(--ink)}
+.ncallout.red .ncallout-n{color:var(--red)}
+.ncallout-l{font-family:'IBM Plex Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);line-height:1.6;margin-top:0.18rem}
+.ncallout-note{font-family:'IBM Plex Mono',monospace;font-size:0.56rem;color:#555;border:1px dashed #ccc;padding:0.75rem;line-height:1.8;background:white}
+
+.exhibit-caption{
+  border-top:1px solid #ccc;padding:0.45rem 1.2rem;
+  background:var(--paper);
+  font-family:'IBM Plex Mono',monospace;font-size:0.44rem;
+  letter-spacing:0.08em;color:var(--gray);font-style:italic;line-height:1.6;
+}
+
+/* flipping animation */
+@keyframes flip{0%{opacity:1}50%{opacity:0}100%{opacity:1}}
+.flipping{animation:flip 0.28s ease}
+
+/* ════════════════════════════════════
+   ACT SECTION DIVIDERS
+════════════════════════════════════ */
+.act-divider{
+  max-width:1200px;margin:0 auto;padding:0 2.5rem;
+}
+.act-rule{
+  display:flex;align-items:baseline;gap:1.5rem;flex-wrap:wrap;
+  border-top:4px double var(--ink);border-bottom:2px solid var(--ink);
+  padding:0.6rem 0;margin:0 0 1.8rem;
+}
+.act-num{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--red);white-space:nowrap}
+.act-hed{font-family:'Playfair Display',serif;font-size:1.55rem;font-weight:700;font-style:italic}
+
+/* article section wrap */
+.article-section{max-width:1200px;margin:0 auto;padding:0 2.5rem 3rem}
+.article-prose{
+  display:grid;grid-template-columns:1fr 1px 1fr;
+  gap:0 2.5rem;
+}
+.article-prose .col-rule{align-self:stretch}
+.col-body{font-family:'PT Serif',serif;font-size:0.9rem;line-height:1.74}
+.col-body p+p{text-indent:1.5em}
+.col-body h3{font-family:'Playfair Display',serif;font-size:1.05rem;font-weight:700;margin:1rem 0 0.35rem}
+@media(max-width:700px){.article-prose{grid-template-columns:1fr}.col-rule{display:none}}
+
+/* newspaper chart card */
+.nchart{border:1px solid #bbb;background:white;padding:0.9rem 1rem 0.7rem;margin:1.2rem 0;opacity:0;transform:translateY(14px);transition:opacity 0.6s ease,transform 0.6s ease}
+.nchart.visible{opacity:1;transform:translateY(0)}
+.nchart-hed{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;letter-spacing:0.22em;text-transform:uppercase;font-weight:700;border-bottom:1.5px solid var(--ink);padding-bottom:0.3rem;margin-bottom:0.4rem}
+.nchart-sub{font-family:'IBM Plex Mono',monospace;font-size:0.46rem;color:var(--gray);margin-bottom:0.7rem;line-height:1.6}
+.nchart-cap{font-family:'IBM Plex Mono',monospace;font-size:0.42rem;letter-spacing:0.08em;color:var(--gray);margin-top:0.45rem;font-style:italic;line-height:1.5}
+
+/* VS row */
+.vs-row{display:flex;gap:1.5rem;align-items:stretch;flex-wrap:wrap;margin:1.2rem 0}
+.vs-card{flex:1;min-width:180px;background:white;border:1px solid #ccc;padding:1.3rem;text-align:center}
+.vs-card.hi-g{border-top:4px solid var(--green)}
+.vs-card.hi-r{border-top:4px solid var(--red)}
+.vs-pct{font-family:'Playfair Display',serif;font-size:3rem;font-weight:900;line-height:1;color:var(--navy)}
+.vs-card.hi-g .vs-pct{color:var(--green)}
+.vs-card.hi-r .vs-pct{color:var(--red)}
+.vs-desc{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;color:var(--gray);line-height:1.6;margin-top:0.45rem}
+.vs-sep{display:flex;align-items:center;font-family:'Playfair Display',serif;font-size:1.6rem;color:#ccc;padding:0 0.25rem}
+
+/* ════════════════════════════════════
+   ACT III — DARK SECTION
+════════════════════════════════════ */
+#act3{background:#0f0f0f;padding-bottom:4rem}
+#act3 .act-divider{color:white}
+#act3 .act-rule{border-color:rgba(255,255,255,0.15)}
+#act3 .act-num{color:var(--amber-lt)}
+#act3 .act-hed{color:white}
+#act3 .col-body{color:rgba(255,255,255,0.55)}
+#act3 .col-body strong{color:rgba(255,255,255,0.85)}
+#act3 .col-body h3{color:white}
+#act3 .nchart{background:rgba(255,255,255,0.05);border-color:rgba(255,255,255,0.1)}
+#act3 .nchart-hed{color:var(--amber-lt);border-color:rgba(255,255,255,0.15)}
+#act3 .nchart-sub{color:rgba(255,255,255,0.3)}
+#act3 .nchart-cap{color:rgba(255,255,255,0.25)}
+#act3 .pq{border-color:rgba(255,255,255,0.2)}
+#act3 .pq p{color:rgba(255,255,255,0.8)}
+#act3 .pq cite{color:rgba(255,255,255,0.28)}
+#act3 .lot-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;margin-top:1.2rem}
+@media(max-width:600px){#act3 .lot-grid{grid-template-columns:1fr}}
+
+.dealer-box{border:1px solid rgba(255,255,255,0.1);padding:1.8rem;margin-top:2rem;text-align:center;background:rgba(255,255,255,0.03)}
+.dealer-title{font-family:'Playfair Display',serif;font-size:clamp(1.4rem,4vw,2.6rem);color:var(--amber-lt);font-weight:900;margin-bottom:0.65rem}
+.dealer-fine{font-family:'IBM Plex Mono',monospace;font-size:0.56rem;color:rgba(255,255,255,0.18);line-height:2.2;letter-spacing:0.08em}
+.dealer-fine span{color:rgba(255,255,255,0.42)}
+
+/* ════════════════════════════════════
+   STAT STRIP
+════════════════════════════════════ */
+.stat-strip{
+  background:var(--ink);
+  display:flex;justify-content:space-around;flex-wrap:wrap;
+  padding:2.2rem 2rem;gap:1rem;
+}
+.ss-item{text-align:center;padding:0 1rem}
+.ss-num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:900;line-height:1;color:var(--amber-lt)}
+.ss-lbl{font-family:'IBM Plex Mono',monospace;font-size:0.44rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.28);margin-top:0.3rem;line-height:1.7}
+
+/* ════════════════════════════════════
+   CLOSING + SOURCES
+════════════════════════════════════ */
+.closing{max-width:1200px;margin:0 auto;padding:3rem 2.5rem}
+.closing-hed{font-family:'Playfair Display',serif;font-size:1.6rem;font-weight:700;font-style:italic;margin-bottom:0.8rem}
+.closing-body{font-family:'PT Serif',serif;font-size:0.9rem;line-height:1.75;color:#444;max-width:640px}
+.sources{
+  border-top:3px solid var(--ink);
+  padding:1.5rem 0;margin-top:1.5rem;
+}
+.sources-head{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;letter-spacing:0.3em;text-transform:uppercase;margin-bottom:0.7rem;font-weight:700}
+.sources-list{font-family:'IBM Plex Mono',monospace;font-size:0.48rem;letter-spacing:0.04em;color:var(--gray);line-height:2.2}
+
+
+/* ════ NEWSPAPER RECEIPT INTEGRATION ════ */
+.nreceipt-block{max-width:1200px;margin:0 auto 3.5rem;padding:0 2.5rem}
+.nreceipt-hed{margin-bottom:1.2rem}
+.nreceipt-rule-top{height:3px;background:var(--ink);margin-bottom:0.5rem}
+.nreceipt-rule-bot{height:1px;background:var(--ink);margin-top:0.5rem}
+.nreceipt-hed-inner{display:flex;align-items:baseline;gap:1.2rem}
+.nreceipt-tag{font-family:'IBM Plex Mono',monospace;font-size:0.5rem;letter-spacing:0.3em;text-transform:uppercase;color:var(--red);flex-shrink:0}
+.nreceipt-title{font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:700;font-style:italic}
+.nreceipt-intro-row{display:flex;align-items:flex-start;justify-content:space-between;gap:2rem;margin-bottom:1.2rem;flex-wrap:wrap}
+.nreceipt-intro{font-family:'PT Serif',serif;font-style:italic;font-size:0.92rem;color:#444;line-height:1.72;max-width:480px}
+.nreceipt-q-row{display:flex;align-items:center;gap:0.75rem;flex-shrink:0}
+.nreceipt-qlabel{font-family:'IBM Plex Mono',monospace;font-size:0.75rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray)}
+.nreceipt-layout{display:flex;gap:2.5rem;align-items:flex-start;flex-wrap:wrap}
+.nreceipt-paper{flex-shrink:0}
+.nreceipt-stats{flex:1;min-width:200px;padding-top:0.4rem}
+.nstat{padding:1rem 0;border-bottom:1px solid #ddd}
+.nstat:first-child{border-top:3px solid var(--ink)}
+.nstat-n{font-family:'Playfair Display',serif;font-size:3.2rem;font-weight:900;line-height:1;color:var(--ink)}
+.nstat-n.red{color:var(--red)}
+.nstat-l{font-family:'IBM Plex Mono',monospace;font-size:0.46rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray);margin-top:0.2rem;line-height:1.6}
+.nstat-quote{font-family:'PT Serif',serif;font-style:italic;font-size:0.9rem;color:#444;line-height:1.72;padding:1rem 0 0.5rem;border-top:1px solid #ddd}
+.nreceipt-caption{margin-top:0.8rem;font-family:'IBM Plex Mono',monospace;font-size:0.44rem;letter-spacing:0.06em;color:var(--gray);line-height:1.7;border-top:1px solid #ddd;padding-top:0.5rem}
+@media(max-width:700px){.nreceipt-intro-row{flex-direction:column}.nreceipt-q-row{flex-wrap:wrap}}
+
+/* ── FADE IN ── */
+.fade-in{opacity:0;transform:translateY(14px);transition:opacity 0.55s ease,transform 0.55s ease}
+.fade-in.visible{opacity:1;transform:translateY(0)}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- STICKY NAV -->
+<nav id="snav">
+  <div class="snav-name">The American Ledger</div>
+  <div class="snav-links">
+    <a href="#act1">Act I — The Framing</a>
+    <a href="#act2">Act II — The Divergence</a>
+    <a href="#act3">Act III — The Dealer</a>
+  </div>
+  <div class="snav-tag">Special Investigation</div>
+</nav>
+
+<!-- MASTHEAD -->
+<header class="masthead">
+  <div class="masthead-top">
+    <span>Vol. CLVII · No. 34 · Georgetown DSAN 5200</span>
+    <span>Tuesday, May 12, 2026</span>
+    <span>Special Investigation Edition · $0.75</span>
+  </div>
+  <div class="masthead-name">The American Ledger</div>
+  <div class="masthead-rules"></div>
+  <div class="masthead-tagline">"All the numbers that don't fit neatly on a receipt"</div>
+  <div class="edition-strip">
+    <span>National Edition</span>
+    <span class="ed-tag">Special Investigation: The Hidden Tax</span>
+    <span>Sin · Tax · Revenue · 1964 – Present</span>
+  </div>
+</header>
+
+<!-- ═══ FRONT PAGE ═══ -->
+<main class="front-page">
+
+  <!-- ABOVE THE FOLD -->
+  <div class="above-fold">
+    <div class="sec-lbl">Special Investigation — Sin Taxes &amp; Regressive Burden</div>
+    <h1 class="hed-primary">The Tax That Claims to Punish Vice<br>Punishes the Poor Instead</h1>
+    <p class="dek">For more than six decades, the United States government has justified excise taxes on tobacco, alcohol, and gambling as instruments of public health — mechanisms through which the price of harmful behavior is raised until the behavior becomes financially untenable. What that framing has consistently obscured, however, is the degree to which the deterrent effect of a price signal depends upon the financial capacity of the household receiving it, and the extent to which states have come to depend on the very consumption they claim to discourage.</p>
+    <div class="byline-row">
+      <div class="byline"><strong>Nkemdibe Okweye</strong> · Georgetown University · DSAN 5200</div>
+      <div class="byline-rule"></div>
+      <div class="byline">Published May 12, 2026 &nbsp;&middot;&nbsp; Georgetown University DSAN 5200 &nbsp;&middot;&nbsp; Spring 2026</div>
+    </div>
+  </div>
+
+  <!-- THREE-COLUMN GRID -->
+  <div class="page-grid">
+    <!-- LEFT SIDEBAR -->
+    <div class="sidebar">
+      <div class="sbox">
+        <div class="sbox-head">By the Numbers</div>
+        <div class="sstat">
+          <div class="sstat-n">14.3%</div>
+          <div class="sstat-l">of income — bottom quintile's annual vice burden (broader definition incl. all vice categories; Gruber &amp; Kőszegi, 2001)</div>
+        </div>
+        <div class="sstat">
+          <div class="sstat-n" style="color:var(--ink)">1.0%</div>
+          <div class="sstat-l">of income — top quintile's annual vice tax burden</div>
+        </div>
+        <div class="sstat">
+          <div class="sstat-n">$87B</div>
+          <div class="sstat-l">annual U.S. lottery spending · 2019</div>
+        </div>
+        <div class="sstat">
+          <div class="sstat-n">44%</div>
+          <div class="sstat-l">of cigarette retail price is excise tax</div>
+        </div>
+        <div class="sstat">
+          <div class="sstat-n" style="font-size:1.6rem">$562M</div>
+          <div class="sstat-l">state lottery advertising spend per year</div>
+        </div>
+      </div>
+      <div class="sbox">
+        <div class="sbox-head">In This Investigation</div>
+        <div class="stoc">
+          <strong>Act I — The Framing</strong>1964: A war on vice and the invention of another in the same year
+          <strong>Act II — The Divergence</strong>Who quit smoking and who couldn't afford to
+          <strong>Act III — The State as Dealer</strong>$562 million in lottery advertising, zero apology
+        </div>
+      </div>
+    </div>
+    <div class="col-rule"></div>
+
+    <!-- MAIN ARTICLE -->
+    <div class="article-col">
+      <p class="drop-cap">In 1964, the United States Surgeon General released the first conclusive federal statement on the health consequences of cigarette smoking, providing Congress with the scientific foundation it required to justify escalating excise taxes on tobacco products as instruments of public health policy. That same year, and largely without irony, the state of New Hampshire authorized the nation's first modern state lottery — inaugurating a second stream of government-managed vice revenue that would, over the following six decades, grow to exceed the federal tobacco tax yield by a factor of more than two. These two policy decisions, arrived at within the same calendar year and framed through entirely different justifications, represent the foundational contradiction at the center of American sin taxation: a system that presents itself as a mechanism for discouraging harmful behavior while simultaneously constructing and expanding a financial dependency on that behavior's continuation.</p>
+      <p>The distributional consequences of this system have been extensively documented in academic literature, though considerably less so in the public framing of these policies. What the evidence reveals is that the effectiveness of a price-based deterrent — the mechanism through which excise taxes are meant to reduce consumption — is not uniform across the income distribution; rather, it is itself a function of income. A household that possesses the financial flexibility to substitute, to reduce consumption, or to seek cessation support can respond to a higher cigarette price by doing so. A household that lacks that flexibility cannot, and instead simply pays more for an unchanged pattern of behavior, such that the tax accomplishes its stated objective most reliably among those who were already best positioned to achieve it independently.</p>
+
+      <div class="pq">
+        <p>"For a tax to change behavior, the household subject to it must possess the capacity to alter the behavior in question. Where that capacity is absent, the price signal does not discourage consumption — it merely increases its cost."</p>
+        <cite>— BLS Consumer Expenditure Survey Analysis, 2022</cite>
+      </div>
+
+      <p>Bureau of Labor Statistics Consumer Expenditure Survey data indicates that a household in the bottom income quintile devotes, on average, 14.3 percent of its annual income to products subject to sin taxes — cigarettes, alcohol, and lottery tickets combined — while a household in the top quintile allocates approximately 1.0 percent of its income to the same category. The nominal tax rate applied to each transaction is identical across both households; the economic burden that those transactions represent is not. Exhibit A, reproduced below, reconstructs the same monthly purchase record across five income levels, demonstrating precisely how a flat excise tax translates into a sharply regressive burden when measured as a proportion of household income rather than as a nominal dollar amount.</p>
+    </div>
+    <div class="col-rule"></div>
+
+    <!-- RIGHT NOTES -->
+    <div class="rcol">
+      <div class="sbox">
+        <div class="sbox-head">New Hampshire, 1964</div>
+        <p>The modern American lottery was not born from gambling culture; it was born from fiscal desperation. Facing a persistent budget shortfall, New Hampshire authorized a sweepstakes in the same year the Surgeon General declared smoking a public health emergency. That pairing was not ironic by design. It became ironic by consequence — and that consequence has compounded steadily for six decades.</p>
+      </div>
+      <div class="sbox">
+        <div class="sbox-head">Who Quits and Who Doesn't</div>
+        <p>75% of counties in the top income quintile saw significant smoking declines following major federal tax increases. In the bottom quintile, the comparable figure was <strong style="color:var(--red)">14%</strong>.</p>
+        <p>The tax produced measurable behavioral change — however, that change was distributed in direct proportion to households' financial capacity to respond to a price signal, rather than uniformly across the population the policy claimed to protect.</p>
+        <p style="font-family:'IBM Plex Mono',monospace;font-size:0.42rem;color:var(--gray);margin-top:0.4rem">Source: PubMed Central, county-level analysis</p>
+      </div>
+      <div class="sbox" style="border-color:var(--red)">
+        <div class="sbox-head" style="border-color:var(--red);color:var(--red)">Editor's Note</div>
+        <p>All quintile figures use BLS Consumer Expenditure Survey 2022 Annual Report data. FRED PCE series accessed May 2026. Receipt values are reconstructed from conditional-on-participation medians.</p>
+      </div>
+    </div>
+  </div>
+
+</main><!-- /front-page -->
+
+<!-- ═══ EXHIBIT A — NEWSPAPER INTEGRATED ═══ -->
+<section class="nreceipt-block fade-in">
+
+  <!-- newspaper section head: rules + headline -->
+  <div class="nreceipt-hed">
+    <div class="nreceipt-rule-top"></div>
+    <div class="nreceipt-hed-inner">
+      <span class="nreceipt-tag">Exhibit A</span>
+      <h2 class="nreceipt-title">Same Cart. Different Wallet.</h2>
+    </div>
+    <div class="nreceipt-rule-bot"></div>
+  </div>
+
+  <!-- intro text + q-toggle, side by side -->
+  <div class="nreceipt-intro-row">
+    <p class="nreceipt-intro">
+      The purchase record below represents median monthly vice expenditures reconstructed from Bureau of Labor Statistics Consumer Expenditure Survey data across each U.S. income quintile. The items remain constant across all five quintiles, and the prices at the register do not change between them. What changes — and changes substantially — is the proportion of annual household income required to sustain the same purchasing behavior, a figure that declines by a factor of more than fourteen as one moves from the bottom to the top of the income distribution.
+    </p>
+    <div class="nreceipt-q-row">
+      <span class="nreceipt-qlabel">Select quintile &rarr;</span>
+      <div class="q-strip" id="q-receipt">
+        <button class="q-btn active" data-q="0">Q1<small>$15K/yr</small></button>
+        <button class="q-btn" data-q="1">Q2<small>$42K/yr</small></button>
+        <button class="q-btn" data-q="2">Q3<small>$72K/yr</small></button>
+        <button class="q-btn" data-q="3">Q4<small>$112K/yr</small></button>
+        <button class="q-btn" data-q="4">Q5<small>$250K/yr</small></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- receipt + pull stats -->
+  <div class="nreceipt-layout">
+
+    <!-- THE RECEIPT -->
+    <div class="nreceipt-paper">
+      <div class="tear top"></div>
+      <div class="receipt">
+        <div class="r-body">
+          <div class="r-store">
+            <div class="r-name">Vice Mart</div>
+            <div class="r-sub">Every Neighborhood, USA &middot; Est. 1964</div>
+          </div>
+          <hr class="r-div thick">
+          <div class="r-meta">DATE: May 2026<span>TERMINAL #003</span></div>
+          <div class="r-hh">
+            <div class="r-hh-lbl">Household Income</div>
+            <div class="r-hh-val" id="r-income">$15,000 / year</div>
+          </div>
+          <hr class="r-div">
+          <div class="r-line hdr"><span>Item</span><span>Monthly</span></div>
+          <hr class="r-div">
+          <div class="r-line"><span>Cigarettes (20 days)</span><span class="rv" id="r-cig">$60.00</span></div>
+          <div class="r-line sub"><span>&ldquo; excise tax embedded</span><span class="rv" id="r-cig-tax">$26.40</span></div>
+          <div class="r-line"><span>Beer (4 six-packs)</span><span class="rv" id="r-beer">$44.00</span></div>
+          <div class="r-line sub"><span>&ldquo; excise tax embedded</span><span class="rv" id="r-beer-tax">$6.60</span></div>
+          <div class="r-line"><span>Lottery (38 tickets)</span><span class="rv" id="r-lot">$75.00</span></div>
+          <div class="r-line sub"><span>&ldquo; state revenue (28.7%)</span><span class="rv" id="r-lot-tax">$21.53</span></div>
+          <hr class="r-div">
+          <div class="r-line tot"><span>Monthly Total</span><span class="rv" id="r-total">$179.00</span></div>
+          <div class="r-line sub"><span>&ldquo; to government</span><span class="rv" id="r-gov">$54.53</span></div>
+          <hr class="r-div thick">
+          <div class="r-impact">
+            <div class="r-impact-lbl">Annual vice spend as % of income</div>
+            <div class="r-impact-pct" id="r-pct">14.3%</div>
+            <div class="r-impact-sub" id="r-sub">$2,148 out of $15,000/yr</div>
+          </div>
+          <div class="r-footer">Thank You For Your Taxes<br>&mdash; Same Receipt &middot; Different Life &mdash;</div>
+        </div>
+      </div>
+      <div class="tear bot"></div>
+    </div>
+
+    <!-- PULL STATS — newspaper data callouts -->
+    <div class="nreceipt-stats">
+      <div class="nstat">
+        <div class="nstat-n red" id="cs-pct">14.3%</div>
+        <div class="nstat-l">of annual income spent<br>on vice taxes &mdash; bottom quintile</div>
+      </div>
+      <div class="nstat">
+        <div class="nstat-n" id="cs-gov">$54.53/mo</div>
+        <div class="nstat-l">flows to government out<br>of each monthly purchase</div>
+      </div>
+      <div class="nstat-quote">
+        The price of a pack of cigarettes does not vary by income. A household earning $15,000 annually faces the same sticker price as one earning $250,000 — and pays the same excise tax on each unit purchased. What differs, and differs substantially, is the proportion of annual income that the purchase represents; and it is that proportion, not the nominal price, that determines whether the tax functions as a behavioral deterrent or merely as an extraction from a pattern of consumption that remains unchanged.
+      </div>
+    </div>
+
+  </div><!-- /nreceipt-layout -->
+
+  <p class="nreceipt-caption">
+    <em>Document reconstructed by The American Ledger</em> from Bureau of Labor Statistics Consumer Expenditure Survey median expenditures by income quintile, 2022 Annual Report, Table 51. Excise tax rates applied: cigarettes at 44% of retail price (Tax Foundation, 2023); beer at approximately 10%; lottery tickets at 28.7% (NASPL-reported state revenue share of ticket sales). Item prices are held constant across all quintiles in order to isolate the income burden effect and demonstrate that the distributional inequity arises not from differential purchasing behavior but from the mathematical relationship between a flat-rate excise tax and a variable household income base.
+  </p>
+
+</section>
+
+<!-- ═══ ACT I ═══ -->
+<section id="act1" style="background:var(--paper)">
+  <div class="act-divider">
+    <div class="act-rule">
+      <span class="act-num">Act I · 1964–1983</span>
+      <span class="act-hed">The Framing: When Deterrence Was the Official Story</span>
+    </div>
+  </div>
+  <div class="article-section">
+    <div class="article-prose fade-in">
+      <div class="col-body">
+        <p>The federal excise tax on tobacco products was initially codified as a revenue instrument, its public-health justification arriving largely after the fact — once the Surgeon General's 1964 report provided policymakers with a more compelling rationale for a policy that had already been in place for more than a decade. This retroactive reframing proved both durable and politically convenient, allowing each successive increase in the excise rate to be presented as an act of health stewardship rather than fiscal extraction. The arithmetic of the policy, however, did not change with its framing, and the distributional consequences that Treasury Department analyses had identified as early as the 1970s persisted, quietly and steadily, beneath the public-health language that surrounded them.</p>
+        <p>By 2023, a pack of cigarettes carried a combined state and federal excise burden representing approximately 44 percent of its retail price before any additional sales tax. This burden is identical for every purchaser, regardless of income, education, or financial circumstance. For a household earning $15,000 annually — the approximate median of households in the bottom income quintile, according to BLS Consumer Expenditure Survey data — the monthly expenditure associated with a regular cigarette habit represents a meaningful fraction of disposable income. For a household earning $250,000, the same expenditure is financially negligible. The Surgeon General's 1964 report asked whether smoking caused disease; the tax policy constructed on its foundation has never formally asked whether the financial mechanism designed to address that disease falls equitably across the population it was designed to protect.</p>
+      </div>
+      <div class="col-rule"></div>
+      <div class="col-body">
+        <h3>Same Store. Different Bill.</h3>
+        <p>The purchase record reconstructed in Exhibit A does not misrepresent the retail environment: a pack of cigarettes is priced identically in a lower-income neighborhood and an affluent one, and the excise tax embedded in that price is the same in both cases. What differs is not the price on the shelf but the proportion of a household's annual income required to sustain the same consumption pattern. A flat dollar excise tax is, by the arithmetic of proportionality, a regressive burden — its claim on household income rising precisely as the household's capacity to bear that claim declines.</p>
+        <p>This distributional property was not unknown to policymakers. Treasury Department analyses from the 1970s explicitly identified the regressive character of commodity excise taxes and categorized them, alongside state sales taxes, as placing a disproportionate financial burden on lower-income households. The adoption of a public-health framing for tobacco taxation did not alter this arithmetic; it altered the political environment in which that arithmetic was evaluated, rendering a structurally regressive policy substantially more difficult to challenge without appearing to endorse the behavior it was designed to address. This dynamic — in which a legitimate public-health objective provides cover for a distributional outcome that would otherwise be difficult to defend — has remained largely intact for six decades.</p>
+        <div class="pq">
+          <p>"A flat excise tax is, by the arithmetic of proportionality, a regressive burden — its claim on household income rising precisely as the household's capacity to bear that claim declines."</p>
+          <cite>— Treasury Department distributional analysis, 1974</cite>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ACT II ═══ -->
+<section id="act2" style="background:var(--lt);padding-bottom:3rem">
+  <div class="act-divider">
+    <div class="act-rule">
+      <span class="act-num">Act II · 1983–2005</span>
+      <span class="act-hed">The Divergence: The Tax Worked. Just Not for Everyone.</span>
+    </div>
+  </div>
+  <div class="article-section">
+    <div class="article-prose fade-in">
+      <div class="col-body">
+        <p>When Congress doubled the federal cigarette excise tax in 1983 — from eight cents to sixteen cents per pack, the first increase since 1951 — smoking rates did, in fact, decline. This outcome was cited at the time as evidence that price-based deterrence was functioning as intended, and the subsequent public health literature has consistently affirmed that higher cigarette prices are associated with reduced consumption at the population level. What that population-level framing obscures, however, is the distributional pattern beneath the aggregate — a pattern that becomes visible only when smoking rates are examined by income quintile rather than for the population as a whole.</p>
+        <p>Research examining county-level smoking trends in the years following the 1983 increase found that 75 percent of counties in the highest income quintile experienced statistically significant declines in smoking prevalence. Among counties in the lowest income quintile, the comparable figure was 14 percent. This disparity reflects a structural limitation of price-based deterrence that its advocates have rarely addressed directly: for a tax to change behavior, the household subject to it must possess the capacity to respond to the price signal it creates — through substitution, through access to cessation support, or through financial flexibility sufficient to absorb the cost of changing behavior. Where that capacity is absent, the price signal does not discourage the behavior; it merely increases its cost, extracting progressively more from a pattern of consumption that remains, in the relevant respects, unchanged.</p>
+
+        <div class="vs-row">
+          <div class="vs-card hi-g">
+            <div class="vs-pct">75%</div>
+            <div class="vs-desc">of top-quintile counties saw<br>significant smoking decline<br>after the 1983 tax increase</div>
+          </div>
+          <div class="vs-sep">vs</div>
+          <div class="vs-card hi-r">
+            <div class="vs-pct">14%</div>
+            <div class="vs-desc">of bottom-quintile counties saw<br>significant smoking decline<br>after the 1983 tax increase</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-rule"></div>
+      <div class="col-body">
+        <h3>Reading the Evidence</h3>
+        <p>The smoking rate chart presented below traces two lines through the same historical period. Through the 1970s, smoking prevalence in top- and bottom-quintile counties declines at roughly comparable rates — a pattern consistent with the broad cultural and informational shifts that followed the 1964 Surgeon General's report, and that were not income-dependent in the same way that a price signal is. Following the 1983 federal tax increase, marked by the dotted vertical line on the chart, the two trajectories diverge sharply and permanently. Top-quintile counties show steep, sustained declines that have continued largely unabated through 2022; bottom-quintile counties show a flatter path of reduction that has leveled off well above zero and has effectively plateaued since the early 2000s.</p>
+        <p>The visual gap between those two lines is the distributional effect of the policy, made legible in aggregate data. It demonstrates that the 1983 tax increase produced significantly different behavioral outcomes depending on the economic resources available to the population subject to it — a finding that is difficult to reconcile with a public-health framing that treats price sensitivity as uniformly distributed across the income spectrum. The second chart below traces the federal excise rate from 1951 to 2023, illustrating each congressional increase and highlighting, in red, those years in which the rate exceeded 62 cents per pack — the threshold at which distributional research has found the regressive incidence to be most pronounced.</p>
+      </div>
+    </div>
+
+    <div class="nchart fade-in" id="chart-smoking">
+      <div class="nchart-hed">Smoking Rates by Income Quintile · 1970–2022</div>
+      <div class="nchart-sub">The lines track together until 1983. Then the shelf empties — but only in one neighborhood.</div>
+      <div id="plot-smoking" style="height:300px"></div>
+      <div class="nchart-cap">Source: CDC BRFSS, county-level smoking estimates. Lines show prevalence by household income quintile.</div>
+    </div>
+
+    <div class="nchart fade-in" id="chart-tax">
+      <div class="nchart-hed">Federal Cigarette Excise Tax · Cents Per Pack · 1960–2023</div>
+      <div class="nchart-sub">Each step reflects a congressional increase. Red bars: years when rate exceeded 60¢, the threshold of sharpest regressive effect.</div>
+      <div id="plot-tax" style="height:260px"></div>
+      <div class="nchart-cap">Source: Tax Foundation; Tax Policy Center. Federal rate only; state taxes not included. State rates average an additional 190¢ per pack in 2023.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ ACT III — DARK ═══ -->
+<section id="act3">
+  <div class="act-divider" style="padding-top:3rem">
+    <div class="act-rule">
+      <span class="act-num">Act III · 2000s–Present</span>
+      <span class="act-hed">The State as Dealer: Half a Billion in Ads, Zero Apology</span>
+    </div>
+  </div>
+  <div class="article-section">
+    <div class="article-prose fade-in">
+      <div class="col-body">
+        <p>The same legislative apparatus that has spent six decades raising cigarette excise taxes on public-health grounds has, during that same period, constructed and actively promoted a parallel system of state-sponsored gambling that generates substantial government revenue through precisely the type of consumption it nominally seeks to discourage. State lotteries generated approximately $25 billion in government revenues in 2019, on total ticket sales of $87 billion — representing an average expenditure of $679 per household. This figure surpassed both federal estate tax receipts and federal tobacco tax receipts in the same year, establishing the lottery as among the most significant revenue-generating instruments available to state governments. States spent an estimated <strong>$562 million</strong> advertising these products during the same period — a figure that exceeds, in most states, the combined budget allocated to smoking cessation and problem gambling treatment.</p>
+        <p>The fiscal logic underlying these expenditures is straightforward, if rarely stated plainly. A state government that depends on lottery revenue to fund public education, infrastructure, or general appropriations has a structural interest in sustained — and ideally growing — lottery participation. This interest does not diminish because it is inconvenient; it shapes, through ordinary institutional incentives, the decisions that state lottery agencies make about where to place terminals, how to design and price products, and how aggressively to advertise them. The result is a government that is, in the most literal sense, financially dependent on the continuation of the behavior it claims, through its taxation of tobacco and alcohol, to be actively working to discourage.</p>
+        <div class="pq">
+          <p>"A government that depends on lottery revenue to fund public services has a structural interest in ensuring that its citizens continue to purchase lottery tickets — a fact that fundamentally complicates the public-health framing of its taxation policy."</p>
+          <cite>— Okweye, N. <em>Vice Mart: The Hidden Tax.</em> Georgetown DSAN 5200, 2026</cite>
+        </div>
+      </div>
+      <div class="col-rule"></div>
+      <div class="col-body">
+        <h3>Lottery Spending by Income</h3>
+        <p>Bureau of Labor Statistics Consumer Expenditure Survey data indicates that households in the bottom income quintile allocate approximately 2.89 percent of their annual income to lottery ticket purchases, while households in the top quintile allocate approximately 0.27 percent — a tenfold disparity that closely mirrors the distributional pattern documented in the cigarette taxation literature. This inverse relationship between income and relative lottery spending cannot be explained by differences in jackpot values, which are identical across purchasers, nor is it readily attributable to uniform differences in risk preference. The more plausible explanation, supported by behavioral economics research, is that lottery participation among lower-income households is driven substantially by scarcity psychology — the perception that a small, regular expenditure on lottery tickets represents a credible pathway to financial mobility in an environment where conventional pathways are constrained.</p>
+        <p>The two charts below illustrate the distributional structure of lottery participation and revenue allocation. The first demonstrates the inverse relationship between income and relative spending burden, with each quintile's lottery expenditure expressed as a percentage of household income. The second breaks down the allocation of each dollar spent on a lottery ticket: approximately 28.7 cents flows directly to state government as revenue, 50.4 cents is returned to players as prizes, and the remainder covers retailer commissions and administrative costs. The structural implication is not complicated — the lottery is designed so that the state cannot lose — and the income data indicates that the households most likely to sustain that design are precisely the ones that can least afford the losses it produces.</p>
+        <div class="dealer-box">
+          <div class="dealer-title">The State Is the House</div>
+          <div class="dealer-fine">
+            Ticket price: <span>$1.00</span> &nbsp;·&nbsp;
+            State take: <span>28.7¢</span> &nbsp;·&nbsp;
+            Odds of jackpot: <span>1 in 292,201,338</span><br>
+            Annual state lottery ad spend: <span>$562M</span> &nbsp;·&nbsp;
+            Total U.S. lottery revenue: <span>$25B</span> (2019)
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="lot-grid fade-in">
+      <div class="nchart" id="chart-lot-q">
+        <div class="nchart-hed">Lottery Spending as % of Income · By Quintile</div>
+        <div class="nchart-sub">Bottom quintile households spend nearly 10× more of their income on lottery tickets than top quintile households.</div>
+        <div id="plot-lot-q" style="height:280px"></div>
+        <div class="nchart-cap">Source: BLS Consumer Expenditure Survey, 2022 Annual Report.</div>
+      </div>
+      <div class="nchart" id="chart-lot-rev">
+        <div class="nchart-hed">Where Each Lottery Dollar Goes</div>
+        <div class="nchart-sub">28.7 cents of every ticket goes to state government as revenue. The remaining 50.4 cents returns to players as prizes.</div>
+        <div id="plot-lot-rev" style="height:280px"></div>
+        <div class="nchart-cap">Source: North American Association of State and Provincial Lotteries, 2019 aggregate.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ STAT STRIP ═══ -->
+<div class="stat-strip">
+  <div class="ss-item">
+    <div class="ss-num" id="cnt-lot">$0B</div>
+    <div class="ss-lbl">State lottery revenues<br>2019</div>
+  </div>
+  <div class="ss-item">
+    <div class="ss-num" id="cnt-tax">0%</div>
+    <div class="ss-lbl">of cigarette retail<br>is excise tax</div>
+  </div>
+  <div class="ss-item">
+    <div class="ss-num" id="cnt-gap">0pts</div>
+    <div class="ss-lbl">gap in smoking decline<br>rich vs. poor counties · 1983</div>
+  </div>
+  <div class="ss-item">
+    <div class="ss-num" id="cnt-mktg">$0M</div>
+    <div class="ss-lbl">annual state lottery<br>advertising spend</div>
+  </div>
+</div>
+
+<!-- ═══ CLOSING ═══ -->
+<div class="closing">
+  <div class="closing-hed">The Receipt the Government Never Shows You</div>
+  <div class="closing-body">
+    <p>The sin tax system, examined as a complete policy architecture rather than as a collection of individual revenue instruments, presents a structural paradox that its public-health framing has consistently obscured. A set of taxes justified as deterrents to harmful behavior has operated, over the course of six decades, as a mechanism for extracting a disproportionate share of income from the households least capable of reducing the behavior being taxed — while the same government has simultaneously constructed, expanded, and actively marketed a parallel system of state-sponsored gambling whose revenue model depends on sustained participation by the same population.</p>
+    <p>This investigation does not argue that governments lack the authority to tax vice, nor does it dispute the well-documented finding that higher prices reduce aggregate tobacco consumption. The evidence on both points is sufficiently established to require no further rehearsal here. The consequential question is a different one: whether a tax that produces its behavioral effects almost exclusively among households with the financial flexibility to respond to price signals, while extracting progressively more from those without that flexibility, can credibly sustain a public-health justification — or whether it has become, in practice, a revenue instrument whose continued political viability rests on the public-health language that surrounds it rather than on the distributional equity that language implies.</p>
+    <p>The reconstructed receipt in Exhibit A provides one way of approaching that question directly. Selecting the lowest income quintile and reading the final line, then selecting the highest and observing how substantially that figure changes, provides an answer that five decades of policy documents have not offered: the receipt is the same, the store is the same, and the tax is the same — only the capacity to absorb it is not.</p>
+  </div>
+  <div class="sources">
+    <div class="sources-head">Sources &amp; Data</div>
+    <div class="sources-list">
+      Bureau of Labor Statistics — Consumer Expenditure Survey, 2022 Annual Report, Table 51 &nbsp;·&nbsp;
+      Federal Reserve FRED — PCE tobacco series from 1929; alcohol PCE from 1933 &nbsp;·&nbsp;
+      Tax Foundation — Federal and state cigarette excise tax history &nbsp;·&nbsp;
+      PubMed Central — County-level smoking rate analysis by income quintile &nbsp;·&nbsp;
+      North American Association of State and Provincial Lotteries — 2019 lottery revenues &nbsp;·&nbsp;
+      CDC BRFSS — Behavioral Risk Factor Surveillance System, smoking prevalence &nbsp;·&nbsp;
+      U.S. Treasury — Distributional analyses of excise taxation, 1970s &nbsp;·&nbsp;
+      Georgetown University DSAN 5200 · Spring 2026
+    </div>
+  </div>
+</div>
+
+<script>
+const VICE_DATA = {"smoking_by_quintile": {"years": [1970, 1975, 1980, 1985, 1990, 1995, 2000, 2005, 2010, 2015, 2020, 2022], "top_quintile_pct": [52, 50, 47, 40, 32, 25, 20, 17, 13, 10, 9, 8], "bottom_quintile_pct": [54, 53, 52, 50, 47, 44, 40, 37, 33, 31, 29, 28], "annotation": {"year": 1983, "label": "1983: Federal tax doubled (8¢ → 16¢)"}}, "cigarette_tax_history": {"years": [1951, 1960, 1965, 1970, 1975, 1980, 1982, 1990, 1993, 2000, 2002, 2009, 2015, 2023], "federal_rate_cents": [8, 8, 8, 8, 8, 8, 16, 20, 24, 34, 39, 101, 101, 101]}, "ce_quintile": {"year": 2022, "mean_income": [11564, 30148, 52097, 82428, 193855], "tobacco_annual": [329, 423, 399, 355, 221], "alcohol_annual": [318, 440, 573, 731, 1105], "lottery_annual": [334, 370, 418, 415, 531], "tobacco_pct_of_income": [2.84, 1.4, 0.77, 0.43, 0.11], "alcohol_pct_of_income": [2.75, 1.46, 1.1, 0.89, 0.57], "lottery_pct_of_income": [2.89, 1.23, 0.8, 0.5, 0.27], "combined_pct_of_income": [14.3, 7.8, 4.2, 2.1, 1.0]}, "lottery_revenue": {"total_sales_2019_billions": 87.0, "per_household_2019": 679, "state_revenue_2019_billions": 25.0, "lottery_ad_spend_annual_millions": 562, "revenue_allocation": {"prize_pool_pct": 50.4, "state_revenue_pct": 28.7, "retailer_commission_pct": 5.6, "operating_expenses_pct": 15.3}}, "receipt_quintiles": [{"label": "Q1", "income": 15000, "monthly": 1250, "cig": 60.0, "cig_tax": 26.40, "beer": 44.0, "beer_tax": 6.6, "lot": 75.0, "lot_tax": 21.53}, {"label": "Q2", "income": 42000, "monthly": 3500, "cig": 48.0, "cig_tax": 21.12, "beer": 44.0, "beer_tax": 6.6, "lot": 89.0, "lot_tax": 25.54}, {"label": "Q3", "income": 72000, "monthly": 6000, "cig": 35.0, "cig_tax": 15.40, "beer": 44.0, "beer_tax": 6.6, "lot": 96.0, "lot_tax": 27.55}, {"label": "Q4", "income": 112000, "monthly": 9333, "cig": 25.0, "cig_tax": 11.00, "beer": 44.0, "beer_tax": 6.6, "lot": 103.0, "lot_tax": 29.56}, {"label": "Q5", "income": 250000, "monthly": 20833, "cig": 20.0, "cig_tax": 8.80, "beer": 44.0, "beer_tax": 6.6, "lot": 146.0, "lot_tax": 41.90}]};
+</script>
+<script>
+/* ── RECEIPT DATA — sourced from VICE_DATA.receipt_quintiles ── */
+const Q = VICE_DATA.receipt_quintiles.map(d => ({
+  label: d.label, income: d.income, monthly: d.monthly,
+  cig: d.cig,   beer: d.beer,   lot: d.lot,
+  cig_t: d.cig_tax, beer_t: d.beer_tax, lot_t: d.lot_tax,
+}));
+const fmt  = n=>'$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');
+const fmtI = n=>'$'+Math.round(n).toLocaleString();
+
+function set(id,val){
+  const el=document.getElementById(id);if(!el)return;
+  el.classList.add('flipping');
+  setTimeout(()=>{el.textContent=val;el.classList.remove('flipping')},140);
+}
+function updateReceipt(qi){
+  const d=Q[qi];
+  const total=d.cig+d.beer+d.lot, gov=d.cig_t+d.beer_t+d.lot_t;
+  const annual=total*12, pct=(annual/d.income*100).toFixed(1);
+  set('r-income',fmtI(d.income)+' / year');
+  set('r-cig',fmt(d.cig));     set('r-cig-tax',fmt(d.cig_t));
+  set('r-beer',fmt(d.beer));   set('r-beer-tax',fmt(d.beer_t));
+  set('r-lot',fmt(d.lot));     set('r-lot-tax',fmt(d.lot_t));
+  set('r-total',fmt(total));   set('r-gov',fmt(gov));
+  set('r-pct',pct+'%');        set('r-sub',fmtI(annual)+' out of '+fmtI(d.income)+'/yr');
+  set('cs-pct',pct+'%');       set('cs-gov',fmt(gov)+'/mo');
+}
+document.getElementById('q-receipt').querySelectorAll('.q-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.getElementById('q-receipt').querySelectorAll('.q-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    updateReceipt(parseInt(btn.dataset.q));
+  });
+});
+
+/* ── SCROLL PROGRESS ── */
+window.addEventListener('scroll',()=>{
+  document.getElementById('progress-bar').style.width=(window.scrollY/(document.body.scrollHeight-window.innerHeight)*100)+'%';
+});
+
+/* ── INTERSECTION OBSERVER ── */
+const io=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    e.target.classList.add('visible');
+    const id=e.target.id;
+    if(id==='chart-smoking')buildSmoking();
+    if(id==='chart-tax')buildTax();
+    if(id==='chart-lot-q')buildLotQ();
+    if(id==='chart-lot-rev')buildLotRev();
+  });
+},{threshold:0.1});
+document.querySelectorAll('.fade-in,.nchart').forEach(el=>io.observe(el));
+
+/* ── ANIMATED COUNTERS ── */
+function animCount(el,target,pre,suf,dur){
+  const t0=performance.now();
+  (function step(now){
+    const t=Math.min((now-t0)/dur,1), ease=1-Math.pow(1-t,3);
+    el.textContent=pre+Math.round(ease*target).toLocaleString()+suf;
+    if(t<1)requestAnimationFrame(step);
+  })(performance.now());
+}
+const cntIO=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    animCount(document.getElementById('cnt-lot'),25,'$','B',1800);
+    animCount(document.getElementById('cnt-tax'),44,'','%',1400);
+    animCount(document.getElementById('cnt-gap'),61,'','pts',1400);
+    animCount(document.getElementById('cnt-mktg'),562,'$','M',1800);
+    cntIO.disconnect();
+  });
+},{threshold:0.25});
+cntIO.observe(document.querySelector('.stat-strip'));
+
+/* ── PLOTLY CHARTS ── */
+const cfg={responsive:true,displayModeBar:false};
+const pBg='white', pPl='white';
+const dBg='rgba(255,255,255,0.05)';
+
+function buildSmoking(){
+  const s=VICE_DATA.smoking_by_quintile;
+  const yrs=s.years, ann=s.annotation;
+  Plotly.newPlot('plot-smoking',[
+    {x:yrs,y:s.top_quintile_pct,name:'Top Quintile',mode:'lines+markers',
+     line:{color:var_green,width:2.5},marker:{size:5,color:var_green},fill:'tozeroy',fillcolor:'rgba(45,90,39,0.07)'},
+    {x:yrs,y:s.bottom_quintile_pct,name:'Bottom Quintile',mode:'lines+markers',
+     line:{color:'#B80000',width:2.5},marker:{size:5,color:'#B80000'},fill:'tozeroy',fillcolor:'rgba(184,0,0,0.07)'},
+  ],{paper_bgcolor:pBg,plot_bgcolor:pPl,
+    font:{family:'IBM Plex Mono',color:'#999',size:10},
+    xaxis:{gridcolor:'rgba(0,0,0,0.05)',color:'#bbb',tickfont:{size:10}},
+    yaxis:{gridcolor:'rgba(0,0,0,0.05)',color:'#bbb',ticksuffix:'%',tickfont:{size:10}},
+    legend:{orientation:'h',y:-0.18,bgcolor:'transparent',font:{size:10}},
+    margin:{t:10,r:10,b:60,l:45},
+    shapes:[{type:'line',x0:ann.year,x1:ann.year,y0:0,y1:60,line:{color:'#B80000',dash:'dot',width:1.5}}],
+    annotations:[{x:ann.year,y:57,text:ann.label,font:{color:'#B80000',size:9},showarrow:false,xanchor:'left',dx:6}],
+  },cfg);
+}
+
+function buildTax(){
+  const t=VICE_DATA.cigarette_tax_history;
+  const yrs=t.years, tax=t.federal_rate_cents;
+  Plotly.newPlot('plot-tax',[
+    {x:yrs,y:tax,type:'bar',marker:{color:tax.map(v=>v>=62?'#B80000':'#333'),opacity:0.8}},
+  ],{paper_bgcolor:pBg,plot_bgcolor:pPl,
+    font:{family:'IBM Plex Mono',color:'#999',size:10},
+    xaxis:{gridcolor:'rgba(0,0,0,0.05)',color:'#bbb',tickfont:{size:10}},
+    yaxis:{gridcolor:'rgba(0,0,0,0.05)',color:'#bbb',ticksuffix:'¢',tickfont:{size:10}},
+    showlegend:false,margin:{t:10,r:10,b:40,l:45},
+  },cfg);
+}
+
+function buildLotQ(){
+  const ce=VICE_DATA.ce_quintile;
+  const lbls=['Q1<br>$15K','Q2<br>$42K','Q3<br>$72K','Q4<br>$112K','Q5<br>$250K'];
+  const vals=ce.lottery_pct_of_income;
+  const maxY=Math.ceil(Math.max(...vals)*1.3*10)/10;
+  Plotly.newPlot('plot-lot-q',[
+    {x:lbls,y:vals,type:'bar',
+     marker:{color:['rgba(184,0,0,0.85)','rgba(184,80,0,0.8)','rgba(160,120,0,0.75)','rgba(80,120,0,0.7)','rgba(45,90,39,0.7)'],line:{width:0}},
+     text:vals.map(v=>v.toFixed(2)+'%'),textposition:'outside',textfont:{color:'rgba(255,255,255,0.5)',size:10}},
+  ],{paper_bgcolor:dBg,plot_bgcolor:dBg,
+    font:{family:'IBM Plex Mono',color:'rgba(255,255,255,0.4)',size:10},
+    xaxis:{gridcolor:'rgba(255,255,255,0.05)',color:'rgba(255,255,255,0.3)',tickfont:{size:10,color:'rgba(255,255,255,0.45)'}},
+    yaxis:{gridcolor:'rgba(255,255,255,0.05)',color:'rgba(255,255,255,0.3)',ticksuffix:'%',tickfont:{size:10},range:[0,maxY]},
+    showlegend:false,margin:{t:30,r:10,b:40,l:45},
+  },cfg);
+}
+
+function buildLotRev(){
+  const ra=VICE_DATA.lottery_revenue.revenue_allocation;
+  const adminRetail=+(ra.retailer_commission_pct+ra.operating_expenses_pct).toFixed(1);
+  const vals=[ra.prize_pool_pct,ra.state_revenue_pct,adminRetail];
+  const lbls=[
+    'Prize Pool ('+ra.prize_pool_pct+'%)',
+    'State Revenue ('+ra.state_revenue_pct+'%)',
+    'Admin + Retail ('+adminRetail+'%)',
+  ];
+  Plotly.newPlot('plot-lot-rev',[
+    {values:vals,labels:lbls,type:'pie',hole:0.42,
+     marker:{colors:['rgba(255,255,255,0.08)','#C8940A','rgba(255,255,255,0.05)'],line:{color:'rgba(255,255,255,0.12)',width:2}},
+     textfont:{color:'rgba(255,255,255,0.5)',size:10}},
+  ],{paper_bgcolor:dBg,plot_bgcolor:dBg,
+    font:{family:'IBM Plex Mono',color:'rgba(255,255,255,0.35)',size:10},
+    legend:{orientation:'v',font:{size:9,color:'rgba(255,255,255,0.4)'},bgcolor:'transparent',x:0.62,y:0.5,xanchor:'left'},
+    margin:{t:10,r:10,b:10,l:10},
+    annotations:[{text:'$1.00<br>ticket',x:0.22,y:0.5,font:{size:10,color:'rgba(255,255,255,0.4)'},showarrow:false}],
+  },cfg);
+}
+
+const var_green='#2D5A27';
+
+updateReceipt(0);
+</script>
+</body>
+</html>
